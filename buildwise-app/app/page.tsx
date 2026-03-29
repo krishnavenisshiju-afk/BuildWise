@@ -1,71 +1,57 @@
-"use client";
-import { useState } from "react";
+﻿"use client";
+import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Home() {
-  const [idea, setIdea] = useState("");
+export default function HomePage() {
   const router = useRouter();
+  const [idea, setIdea] = useState("");
+  const [error, setError] = useState("");
 
-  const handleValidate = () => {
-    if (!idea.trim()) return;
-    router.push(`/results?idea=${encodeURIComponent(idea)}`);
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const trimmedIdea = idea.trim();
+
+    if (!trimmedIdea) {
+      setError("Please describe your idea before submitting.");
+      return;
+    }
+
+    setError("");
+    router.push(`/results?idea=${encodeURIComponent(trimmedIdea)}`);
   };
 
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col">
+    <main className="min-h-screen bg-black text-white flex items-center justify-center px-6 py-12">
+      <div className="w-full max-w-3xl">
+        <header className="mb-10 text-center">
+          <p className="text-sm text-yellow-400 uppercase tracking-widest mb-4">BuildWise</p>
+          <h1 className="text-5xl font-black tracking-tight sm:text-6xl">Describe your idea</h1>
+          <p className="mt-4 text-gray-400 text-base sm:text-lg leading-relaxed">
+            Paste your idea below and BuildWise will tell you whether it’s hackathon-ready, what to simplify, and how to build it fast.
+          </p>
+        </header>
 
-      {/* Navbar */}
-      <nav className="flex justify-between items-center px-8 py-5 border-b border-gray-800">
-        <h1 className="text-2xl font-black tracking-tight">
-          Build<span className="text-yellow-400">Wise</span>
-        </h1>
-        <span className="bg-yellow-400 text-black text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
-          Free
-        </span>
-      </nav>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <label className="block">
+            <span className="text-gray-400 uppercase text-xs tracking-widest">Your idea</span>
+            <textarea
+              value={idea}
+              onChange={(event) => setIdea(event.target.value)}
+              placeholder="e.g. AI-powered marketplace that matches student projects with mentors"
+              className="mt-4 w-full min-h-[240px] rounded-3xl border border-gray-800 bg-gray-950 px-5 py-5 text-white placeholder:text-gray-500 focus:border-yellow-400 focus:outline-none"
+            />
+          </label>
 
-      {/* Main */}
-      <section className="flex flex-col items-center justify-center text-center px-6 py-16 flex-1">
+          {error && <p className="text-red-400 text-sm">{error}</p>}
 
-        <span className="border border-yellow-400 text-yellow-400 text-xs font-bold px-4 py-1 rounded-full mb-8 uppercase tracking-widest">
-          Hackathon Idea Coach
-        </span>
-
-        <h2 className="text-5xl md:text-6xl font-black leading-tight mb-5">
-          Your idea is either<br />
-          <span className="text-yellow-400">gold or garbage.</span><br />
-          Lets find out.
-        </h2>
-
-        <p className="text-gray-400 text-base max-w-lg mb-10 leading-relaxed">
-          No sugarcoating. No fluff. Just a brutally honest breakdown —
-          validation, feasibility, hackathon scope, tech stack, and a pitch.
-          All in seconds.
-        </p>
-
-        {/* Input Card */}
-        <div className="w-full max-w-xl bg-gray-950 rounded-2xl p-5 border border-gray-800 mb-8">
-          <textarea
-            value={idea}
-            onChange={(e) => setIdea(e.target.value)}
-            className="w-full bg-transparent text-white placeholder-gray-600 text-sm resize-none outline-none leading-relaxed"
-            rows={3}
-            placeholder="Describe your idea... e.g. An app that uses AI to match students with internships based on their GitHub projects"
-          />
-          <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-800">
-            <p className="text-gray-700 text-xs">{idea.length} chars</p>
-            <button
-              onClick={handleValidate}
-              disabled={!idea.trim()}
-              className="bg-yellow-400 text-black font-black px-6 py-2.5 rounded-xl hover:bg-yellow-300 transition-all disabled:opacity-30 disabled:cursor-not-allowed text-xs uppercase tracking-widest"
-            >
-              Roast My Idea ⚡
-            </button>
-          </div>
-        </div>
-
-      </section>
-
+          <button
+            type="submit"
+            className="w-full bg-yellow-400 text-black font-black uppercase tracking-widest rounded-3xl py-5 hover:bg-yellow-300 transition-colors"
+          >
+            Roast my idea ⚡
+          </button>
+        </form>
+      </div>
     </main>
   );
 }

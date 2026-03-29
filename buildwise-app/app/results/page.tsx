@@ -38,8 +38,26 @@ function Results() {
         setLoading(false);
       }
     };
-    if (idea) validate();
+
+    if (idea) {
+      validate();
+    } else {
+      setLoading(false);
+    }
   }, [idea]);
+
+  if (!idea && !loading) return (
+    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4 px-6 text-center">
+      <p className="text-5xl">🤔</p>
+      <p className="text-yellow-400 font-black text-xl uppercase tracking-widest">No idea found</p>
+      <p className="text-gray-500 text-sm max-w-md">
+        Add an idea on the homepage first, then try again.
+      </p>
+      <button onClick={() => router.push("/")} className="bg-yellow-400 text-black font-black px-6 py-3 rounded-xl mt-4">
+        Describe your idea
+      </button>
+    </main>
+  );
 
   if (loading) return (
     <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
